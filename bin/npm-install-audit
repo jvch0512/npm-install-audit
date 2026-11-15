@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+'use strict';
+const path = require('path');
+const fs = require('fs');
+const { auditPath, RANK } = require(path.join(__dirname, '..', 'src', 'audit.js'));
+
+function usage() {
+  process.stderr.write('usage: npm-install-audit PATH [--tsv] [--fail-on medium|high|critical]\nExit: 0 ok, 1 findings at or above --fail-on, 2 bad input.\n');
+  process.exit(2);
+}
+
+const args = process.argv.slice(2);
+let target = null, tsv = false, failOn = null;
+for (let i = 0; i < args.length; i++) {
+  const a = args[i];
+  if (a === '--tsv') tsv = true;
+  else if (a === '--fail-on') {
+    i++;
+    if (i >= args.length || !['medium', 'high', 'critical'].includes(args[i])) usage();
+    failOn = args[i];
+  } else if (a.startsWith('-')) usage();
+  else if (target !== null) usage();
+  else target = a;
+}
+if (target === null) usage();
+if (!fs.existsSync(target)) {
+  process.stderr.write(`error: no such file or directory: ${target}\n`);
+  process.exit(2);
+}
+const { files, findings } = auditPath(target);
+const head = `${files} files, ${findings.length} findings`;
+const lines = [tsv ? `# ${head}` : head];
+for (const f of findings) {
+  if (tsv) lines.push([f.sev, f.rule, f.where, f.msg].join('\t'));
+  else lines.push(`${f.sev.toUpperCase().padEnd(8)} ${f.rule} ${f.where}`, `         ${f.msg}`);
+}
+process.stdout.write(lines.join('\n') + '\n');
+if (failOn && findings.some((f) => RANK[f.sev] <= RANK[failOn])) process.exit(1);

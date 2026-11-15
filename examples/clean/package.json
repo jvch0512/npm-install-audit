@@ -1,0 +1,6 @@
+{
+  "name": "clean",
+  "version": "2.0.0",
+  "scripts": { "test": "node --test" },
+  "dependencies": { "lodash": "4.17.21" }
+}

