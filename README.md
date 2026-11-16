@@ -2,6 +2,8 @@
 
 npm-install-audit looks at what `npm install` will execute and fetch before you run it. It reads `package.json` and the lockfile and reports lifecycle scripts that download or evaluate code, dependencies pulled from git or a URL instead of the registry, wildcard versions that accept anything, tarballs resolved over plain HTTP and a missing lockfile. It has no dependencies, so reviewing a project does not require installing one.
 
+![Terminal demo of npm-install-audit on its sample data](docs/demo.svg)
+
 **Live demo:** https://jvch0512.github.io/npm-install-audit/ (Synthetic manifests.)
 
 Node.js 18+, no dependencies. The demo page is rendered from the tool's `--tsv` output by `scripts/site.py` (Python 3, only needed to regenerate the page).
@@ -49,3 +51,13 @@ make test    # node:test suites: every rule on good and bad manifests and lockfi
 ```
 
 MIT.
+
+## Code scanning (SARIF)
+
+`scripts/tsv2sarif.py` converts the `--tsv` output into SARIF 2.1.0, so findings show up in GitHub code scanning:
+
+```sh
+bin/npm-install-audit examples --tsv | python3 scripts/tsv2sarif.py --tool npm-install-audit --prefix examples > results.sarif
+```
+
+Upload `results.sarif` with `github/codeql-action/upload-sarif`. Severities map to SARIF levels (critical and high to error, medium to warning, low and info to note) and to a `security-severity` score.
